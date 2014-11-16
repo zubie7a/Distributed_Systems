@@ -1,2 +1,0 @@
-mpicxx -L '/usr/local/Cellar/opencv/2.4.9/lib' -lopencv_core -lopencv_highgui -lopencv_imgproc mpienc.cpp -o mpienc
-mpicxx -L '/usr/local/Cellar/opencv/2.4.9/lib' -lopencv_core -lopencv_highgui -lopencv_imgproc serialenc.cpp -o serialenc
