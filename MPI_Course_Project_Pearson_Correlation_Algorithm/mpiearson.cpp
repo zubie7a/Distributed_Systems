@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 // is also contained within the invariant data, no further data sending is nee-
 // ded. Then, each process will find the correlation values for one User at a
 // time against all other Users in the database, then returning a list with
-// just the top M correlated Users, saving space by not having to store a huge
+// just the top B correlated Users, saving space by not having to store a huge
 // table with the correlation values between all possible pairs of Users.
     double t1 = MPI_Wtime(); // START COUNTING THE TIME
     MPI_Status status;
@@ -71,9 +71,6 @@ int main(int argc, char *argv[]) {
         string fname = matrixName[0];
         ifstream iss(fname);
         iss >> NUM_USERS >> NUM_MOVIES >> NUM_BEST;
-        // Users: 100
-        // Movies: 100
-        // Amount of Bests Matches: 5
         params[0] = NUM_USERS;
         params[1] = NUM_MOVIES;
         params[2] = NUM_BEST;
@@ -123,8 +120,8 @@ int main(int argc, char *argv[]) {
     // This is a code that will run in both Master and Workers.
         int *recList;
         recList = findBests(NUM_USERS, NUM_MOVIES, NUM_BEST, U1, matrixUI);
-        // Will get the indices of the top M Users this User correlates the
-        // most with depending on the ratings the pairs of Users have.
+        // Will get the indices of the top B Users the U1 user correlates
+        // the most with depending on the ratings the pairs of Users have.
         results.push_back(recList);
         // Store the result for later merging them all.
     }
@@ -132,7 +129,7 @@ int main(int argc, char *argv[]) {
     if(TASK_ID == MASTER) {
         recMat = new int* [NUM_USERS];
         // The Recommendation Matrix is a two dimensional array containing the
-        // indices of the top M sers a given User correlates the most with.
+        // indices of the top B users a given User correlates the most with.
         for(int i = 0; i < results.size(); i++) {
             int USER = i * NUM_PROCS;
             int *list = results[i];
@@ -162,8 +159,10 @@ int main(int argc, char *argv[]) {
             indices[SENDER]++;
             // Increase the count of received results.
             recMat[index] = list;
-            // Store the current result at the place it belongs to. */
+            // Store the current result at the place it belongs to.
         }
+        printf("TASK_ID: %d, Total Time: %lf\n", TASK_ID, MPI_Wtime() - t1);
+        // OUTPUT THE TIME IT TOOK FOR THIS PROCESS
     }
     else {
         for(int i = 0; i < results.size(); i++) {
@@ -171,6 +170,8 @@ int main(int argc, char *argv[]) {
                      FROM_WORKER, MPI_COMM_WORLD);
             // Send to the Master every result obtained by this Worker.
         }
+        printf("TASK_ID: %d, Total Time: %lf\n", TASK_ID, MPI_Wtime() - t1);
+        // OUTPUT THE TIME IT TOOK FOR THIS PROCESS
     }
     // Now, lets make the Workers wait for the Master processing results
     // with the vectors with a dummy Send/Recv, otherwise, while the Mas-
@@ -179,25 +180,13 @@ int main(int argc, char *argv[]) {
     // Even the Master has stuff to do!
     if(TASK_ID == MASTER) {
         system("mkdir -p ./results");
-        ofstream oss("./results/result.txt");
+        ofstream oss("./results/mresult.txt");
         for(int i = 0; i < NUM_USERS; i++){
             for(int j = 0 ; j < NUM_BEST; j++) {
                 oss << recMat[i][j] << " ";
             }
             oss << endl;
         }
-        int value = 0;
-        for(int k = 1; k <= NUM_WORKERS; k++) {
-            MPI_Send(&value, 1, MPI_INT, k, FROM_MASTER_X, MPI_COMM_WORLD);
-            // As a Master, send to every Worker a dummy value to signal
-            // the Master has finished doing something not paralellizable.
-        }
-    }
-    else {
-        int value = 0;
-        MPI_Recv(&value, 1, MPI_INT, MASTER, FROM_MASTER_X,
-                 MPI_COMM_WORLD, &status);
-        // As a Worker, wait for a certain dummy value to come.
     }
     // NOW, CLEAN MEMORY!
     delete params;
@@ -208,8 +197,6 @@ int main(int argc, char *argv[]) {
         }
         delete recMat;
     }
-    printf("TASK_ID: %d, Total Time: %lf\n", TASK_ID, MPI_Wtime() - t1);
-    // OUTPUT THE TIME IT TOOK FOR THIS PROCESS
     RC = MPI_Finalize();
     exit(0);
 }
