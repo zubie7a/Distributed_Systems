@@ -73,7 +73,7 @@ double findCorrelation(int U1, int U2, int NUM_MOVIES, int *matrixUI) {
 
 int* findBests(int NUM_USERS, int NUM_MOVIES, int NUM_BEST,
                int U1, int *matrixUI) {
-// Find the M (NUM_BEST) amount of Users that have the best correlation with U1
+// Find the B (NUM_BEST) amount of Users that have the best correlation with U1
     double *corrList;
     corrList = new double [NUM_USERS];
     // Will store the correlation values between a User and all other Users,
@@ -92,7 +92,7 @@ int* findBests(int NUM_USERS, int NUM_MOVIES, int NUM_BEST,
     // U2: All other Users to compare against.
     int *recList;
     recList = new int [NUM_BEST];
-    // Will contain the top M Users U1 is the most correlated with.
+    // Will contain the top B Users U1 is the most correlated with.
     for(int U2 = 0; U2 < NUM_USERS; U2++) {
         corrList[U2] = (U1 != U2)?
             findCorrelation(U1, U2, NUM_MOVIES, matrixUI) : 1.0;
@@ -104,19 +104,19 @@ int* findBests(int NUM_USERS, int NUM_MOVIES, int NUM_BEST,
     // bestCorr: Variable to go on storing the current best correlation.
     // bestUser: The index of the User with the current best correlation.
     for(int k = 0; k < NUM_BEST; k++) {
-    // Now, lets find the M Users that have the best correlation with User
+    // Now, lets find the B Users that have the best correlation with User
     // i. We'll test this constantly assuming 100 Users and 5 best matches.
-    // We must be careful with this M, if its a number too close to the to-
+    // We must be careful with this B, if its a number too close to the to-
     // tal amount of Users, searching for that amount of total matches will
     // be equal to getting all the elements sorted in descending order, and
     // that amounts to a O(N^2) sort, which is VERY SLOW. Meanwhile, doing
-    // a complete search several times is O(N) with a constant factor (the
+    // a complete search several times is O(kN) with a constant factor (the
     // amount of top matches we want to get). One could simply sort all the
     // correlations for a given User in O(N LOG N) time and access the top
     // matches in constant time, but a complete search will suffice in our
     // case where we want just a small number of matches. In complexity te-
-    // rms, O(N) < O(N LOG N) < O(N^2), and for a website with a HUGE amou-
-    // nt of Users, it certainly makes a difference. Lets stick with O(N).
+    // rms, O(kN) < O(N LOG N) < O(N^2) and for a website with a HUGE amou-
+    // nt of Users, it certainly makes a difference. Lets stick with O(kN).
         bestCorr = -2;
         // Suitable default value since correlations range from -1 to 1.
         bestIndx = -1;
@@ -132,10 +132,10 @@ int* findBests(int NUM_USERS, int NUM_MOVIES, int NUM_BEST,
             }
         }
         // After the complete search is done, lets store the definitive
-        // best match for User i, at position k (which ranges from 0 to M).
+        // best match for User i, at position k (which ranges from 0 to B).
         recList[k] = bestIndx;
         // Store the best User index at the rank k. 0 best ranked, up to
-        // M - 1 which is the less best ranked amount the top M matches.
+        // B - 1 which is the less best ranked amount the top B matches.
         corrList[bestIndx] = -7;
         // Suitable value because we want to ignore this User from now on.
         // Usually a -INF value would do it, but this one does it too!.

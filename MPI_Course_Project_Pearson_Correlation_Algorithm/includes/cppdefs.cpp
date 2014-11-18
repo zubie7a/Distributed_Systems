@@ -37,7 +37,7 @@ bool checkArguments(int NUM_USERS, int NUM_MOVIES, int NUM_MATCHES) {
     // If the amount of matches is greater than the amount of Users, counting
     // each User amongst its possible matches (can't match itself!).
         fprintf(stderr,
-            "More matches were asked for than Users found in input file.\n");
+            "More Matches were asked for than Users found in input file.\n");
         return false;
     }
     return true;
@@ -47,7 +47,9 @@ void validateArguments(int NUM_USERS, int NUM_MOVIES, int NUM_BEST) {
     if(!checkArguments(NUM_USERS, NUM_MOVIES, NUM_BEST)) {
     // If the parse or validation of any of the arguments fails, then finalize
     // the MPI process and exit the program with 1 (usual failure signal).
-        MPI_Abort(MPI_COMM_WORLD, 0);
+        #ifdef MASTER
+            MPI_Abort(MPI_COMM_WORLD, 0);
+        #endif
         exit(1);
     }
 }

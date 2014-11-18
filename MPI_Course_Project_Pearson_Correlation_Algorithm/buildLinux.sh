@@ -1,1 +1,0 @@
-mpicxx pearson.cpp -o pearson
