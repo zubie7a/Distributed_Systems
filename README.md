@@ -19,5 +19,5 @@ It consists on solving **arithmetic expressions**, reading a *large* file with s
 7*6=
 27/22=
 21-14=
-``
+`` *(one per line)*
 And then using **MPI** for finding the result of these simple arithmetic expressions and writing them into a single file with the complete expression.
