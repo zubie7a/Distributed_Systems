@@ -32,5 +32,4 @@ It consists on solving **arithmetic expressions**, reading a large file with suc
 21-14=
 ```
 
-*(One per line)*
-...and then using **MPI** for finding the result of these simple arithmetic expressions and writing them into a single file with the complete expression.
+One per line, and then using **MPI** for finding in parallel the result of these simple arithmetic expressions and merging the result into a single file with the complete expression.
