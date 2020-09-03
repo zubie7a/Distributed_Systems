@@ -8,7 +8,7 @@ This repository focuses on the work done using [**MPI**](https://en.wikipedia.or
 
 Algorithms have their **serial** and their **parallel** implementation, for performing benchmarks and comparing between the single core version and the version that can use arbitrary number of cores.
 
-This was made for educational purposes, and is licensed under the **MIT License**. OpenCV and OpenMPI uses the **BSD License**.
+This was made for educational purposes, and is licensed under the **MIT License**. **OpenCV** and **OpenMPI** uses the **BSD License**.
 
 ### MPI Exam, Challenge and Course Project
 
