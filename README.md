@@ -23,11 +23,14 @@ This program will deal only with finding these vectors *(and painting them over 
 It consists on making a **recommendation system**, reading a large table of ratings that **X** users registered to a movie database site have given to the **Y** movies available to rate in such site *(0: not yet seen, 1-5: rating)* and then using **MPI** for finding the most correlated users, in order to make suggestions of movies to see to each user *(as in, if we want to make suggestions to user A, lets find the user B most correlated to A, and suggest to A some movies that B has seen that A has not seen).*
 
 #### Exam
-It consists on solving **arithmetic expressions**, reading a *large* file with such detailed as:
-``
+It consists on solving **arithmetic expressions**, reading a large file with such operations, expressed as:
+
+```
 1+2=
 7*6=
 27/22=
 21-14=
-`` *(one per line)*
-and then using **MPI** for finding the result of these simple arithmetic expressions and writing them into a single file with the complete expression.
+```
+
+*(One per line)*
+...and then using **MPI** for finding the result of these simple arithmetic expressions and writing them into a single file with the complete expression.
